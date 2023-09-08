@@ -42,3 +42,4 @@ target/classes/dev/.DS_Store
 target/classes/dev/ofilipesouza/.DS_Store
 target/classes/dev/ofilipesouza/tasksphere/.DS_Store
 .DS_Store
+.vscode/launch.json
