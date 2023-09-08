@@ -1,17 +1,20 @@
 package dev.ofilipesouza.tasksphere.controller;
 
+import java.util.UUID;
+
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import dev.ofilipesouza.tasksphere.model.Comment;
 import dev.ofilipesouza.tasksphere.model.Issue;
 import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.repository.IssueRepository;
 import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.UUID;
-public class CommentController extends TaskSphereController {
+@RequestMapping
+public class CommentController {
 
     private final IssueRepository issueRepository;
     private final ProjectRepository projectRepository;

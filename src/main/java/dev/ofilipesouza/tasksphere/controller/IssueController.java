@@ -1,4 +1,7 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-public class IssueController extends TaskSphereController{
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping
+public class IssueController {
 }

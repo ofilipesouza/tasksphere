@@ -1,24 +1,31 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-import dev.ofilipesouza.tasksphere.service.ProjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import dev.ofilipesouza.tasksphere.service.ProjectService;
 
-public class ProjectController extends TaskSphereController{
 
+@RestController
+@RequestMapping("project")
+public class ProjectController {
+
+    @Autowired
     private final ProjectService projectService;
 
     public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
     }
 
-    @GetMapping("/projects")
-    public ResponseEntity<String> getProjectsByUser(@RequestHeader("username") String username){
-        projectService.equals("");
-        return ResponseEntity.ok(username);
+    @GetMapping
+    public ResponseEntity<String> getProjectsByUser(){
+        return ResponseEntity.ok("Teste");
     }
 
-    @GetMapping("/project/{projectId}")
+    @GetMapping("/{projectId}")
     public ResponseEntity<String> getProjectById(@PathVariable String projectId){
         return ResponseEntity.ok(projectId);
     }
