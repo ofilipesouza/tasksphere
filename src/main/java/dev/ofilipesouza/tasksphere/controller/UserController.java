@@ -1,4 +1,7 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-public class UserController extends TaskSphereController{
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping
+public class UserController {
 }
