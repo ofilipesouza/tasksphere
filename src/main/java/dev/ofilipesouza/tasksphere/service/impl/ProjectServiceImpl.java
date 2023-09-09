@@ -1,7 +1,8 @@
 package dev.ofilipesouza.tasksphere.service.impl;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
-
+import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
 import dev.ofilipesouza.tasksphere.repository.UserRepository;
 import dev.ofilipesouza.tasksphere.service.ProjectService;
@@ -17,4 +18,11 @@ public class ProjectServiceImpl implements ProjectService {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
     }
+
+    @Override
+    public List<Project> getProjectsByUser(String email) {
+        return this.projectRepository.findByCreatedBy(userRepository.findByEmail(email));
+    }
+
+    
 }
