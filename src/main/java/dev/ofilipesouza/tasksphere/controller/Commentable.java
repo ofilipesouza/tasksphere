@@ -1,29 +1,31 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import org.springframework.data.jpa.repository.JpaRepository;
 import dev.ofilipesouza.tasksphere.model.Comment;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public abstract class Commentable <T extends Commentable<T>> {
-    
-    private JpaRepository<T, UUID> repository;
-    
-    public Commentable(JpaRepository<T, UUID> repository) {
-        this.repository = repository;
-    }
-
+@Getter
+@MappedSuperclass
+public abstract class Commentable {
+ 
     @OneToMany
-    private List<Comment> comments = new ArrayList<>();
+    private Map<UUID, Comment> comments = new HashMap<UUID,Comment>();
 
     public void addComment(Comment comment){
-        this.comments.add(comment);
+        this.comments.put(comment.getId(), comment);
     };
 
-    public void editComment(Comment comment){};
-    public void deleteComment(Comment comment){}
+    public void editComment(Comment comment){
+        this.comments.put(comment.getId(), comment);
+    };
+    public void deleteComment(Comment comment){
+        this.comments.remove(comment.getId());
+    }
+    
 }

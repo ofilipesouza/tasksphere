@@ -1,6 +1,7 @@
 package dev.ofilipesouza.tasksphere.service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import dev.ofilipesouza.tasksphere.controller.Commentable;
@@ -15,29 +16,6 @@ public class CommentServiceImpl implements CommentService{
     @Autowired
     private CommentRepository commentRepository;
 
-    @Override
-    public void handleComment(Commentable<?> obj, CommentCreationDTO data, User user) {
-        
-        Comment comment = buildComment(data, user);
-
-        switch (data.action()) {
-            case ADD:
-                addComment(obj, comment);
-                break;
-        
-            case EDIT:
-                
-                break;
-
-            case DELETE:
-
-                break;
-            default:
-                break;
-        }
-        
-    }
-
     private Comment buildComment(CommentCreationDTO data, User user) {
         
         Comment comment = new Comment();
@@ -47,22 +25,38 @@ public class CommentServiceImpl implements CommentService{
         return comment;
     }
 
+    private Comment getComment(UUID commmentUuid){
+        return commentRepository.findById(commmentUuid).orElseThrow(()-> new RuntimeException("Not Found"));
+    }
+
     @Override
-    public void addComment(Commentable<?> obj, Comment comment) {
+    public Commentable addComment(Commentable obj, CommentCreationDTO data, User user) {
+
+        Comment comment = buildComment(data, user);
+
         commentRepository.save(comment);
         obj.addComment(comment);
+
+        return obj;
     }
 
     @Override
-    public void deleteComment(Commentable<?> obj, Comment comment) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteComment'");
+    public Commentable deleteComment(Commentable obj, CommentCreationDTO data) {
+        Comment comment = getComment(data.commentId());
+        obj.deleteComment(comment);
+        commentRepository.delete(comment);
+        return obj;
     }
 
     @Override
-    public void editComment(Commentable<?> obj, Comment comment) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editComment'");
+    public Commentable editComment(Commentable obj, CommentCreationDTO data, User user) {
+        Comment comment = getComment(data.commentId());
+        comment.setComment(data.comment());
+        commentRepository.save(comment);
+        obj.editComment(comment);
+
+        return obj;
+        
     }
-    
+
 }

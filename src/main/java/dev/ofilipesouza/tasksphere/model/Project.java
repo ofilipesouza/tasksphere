@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
 import dev.ofilipesouza.tasksphere.controller.Commentable;
-import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,12 +21,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Entity(name = "projects")
-public class Project extends Commentable<Project>{
-
-    @Autowired
-    public Project(ProjectRepository repository) {
-        super(repository);
-    }
+public class Project extends Commentable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
