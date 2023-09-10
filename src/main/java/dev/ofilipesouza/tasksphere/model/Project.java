@@ -1,8 +1,12 @@
 package dev.ofilipesouza.tasksphere.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import dev.ofilipesouza.tasksphere.controller.Commentable;
+import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +23,12 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Entity(name = "projects")
-public class Project {
+public class Project extends Commentable<Project>{
+
+    @Autowired
+    public Project(ProjectRepository repository) {
+        super(repository);
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,9 +39,7 @@ public class Project {
     private User createdBy;
     private LocalDateTime createdDate;
     @OneToMany
-    private List<Issue> issues;
-    @OneToMany
-    private List<Comment> comments;
+    private List<Issue> issues = new ArrayList<>();
 
     public Project(String name, String description, User createdByUser){
         this.name = name;
@@ -40,4 +47,5 @@ public class Project {
         this.createdDate = LocalDateTime.now();
         this.createdBy = createdByUser;
     }
+    
 }
