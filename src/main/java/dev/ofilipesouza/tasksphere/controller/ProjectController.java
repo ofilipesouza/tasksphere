@@ -1,6 +1,5 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +18,6 @@ import dev.ofilipesouza.tasksphere.dto.IssueCreationDTO;
 import dev.ofilipesouza.tasksphere.dto.ProjectCreationDTO;
 import dev.ofilipesouza.tasksphere.dto.ProjectDTO;
 import dev.ofilipesouza.tasksphere.exception.ErrorResponse;
-import dev.ofilipesouza.tasksphere.model.Comment;
 import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.model.User;
 import dev.ofilipesouza.tasksphere.service.CommentService;
@@ -102,13 +100,12 @@ public class ProjectController {
 
         if(projectById.isPresent()){
             String email = SessionUtils.getEmailFromSession(session);
+            
             User user = userService.findByEmail(email);
-            Comment comment = new Comment();
-            comment.setComment(data.comment());
-            comment.setCreatedBy(user);
-            comment.setCreatedDate(LocalDateTime.now());
-            commentService.addComment(projectById.get(), comment);
-            return ResponseEntity.ok("Issue created! 📌");
+
+            commentService.handleComment(projectById.get(), data, user);
+            
+            return ResponseEntity.ok("Comment created! 📝");
         }
         
         return ResponseEntity.ok(data);
