@@ -1,12 +1,12 @@
 package dev.ofilipesouza.tasksphere.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import dev.ofilipesouza.tasksphere.model.Issue;
 import dev.ofilipesouza.tasksphere.model.Project;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,28 +17,26 @@ public class ProjectDTO {
     private String description;
     private UserDTO createdBy;
     private LocalDateTime createdDate;
-    private List<Issue> issues;
+    private List<IssueDTO> issues;
 
     public static ProjectDTO mapProjectToProjectDTO(Project project){
         return new ProjectDTO(project.getId().toString(),
-         project.getName(), 
-         project.getDescription(), 
+         project.getName(),
+         project.getDescription(),
          new UserDTO(
             project.getCreatedBy().getFirstName(),
             project.getCreatedBy().getLastName(),
-            project.getCreatedBy().getEmail(), 
-            project.getCreatedBy().getCreatedDate()), 
-         project.getCreatedDate(), 
-         project.getIssues());
+            project.getCreatedBy().getEmail(),
+            project.getCreatedBy().getCreatedDate()),
+         project.getCreatedDate(),
+         IssueDTO.mapIssuesToIssueDTO(project.getIssues()));
     }
 
     public static List<ProjectDTO> mapProjectsToProjectsDTO(List<Project> projects){
 
-        List<ProjectDTO> listDtos = projects.stream().map(
-            project -> mapProjectToProjectDTO(project))
+        return projects.stream().map(
+                        ProjectDTO::mapProjectToProjectDTO)
             .toList();
-
-        return listDtos;
     }
-    
+
 }

@@ -1,4 +1,4 @@
-package dev.ofilipesouza.tasksphere.controller;
+package dev.ofilipesouza.tasksphere.dto;
 
 public record LoginDTO(String email, String password) {
 }

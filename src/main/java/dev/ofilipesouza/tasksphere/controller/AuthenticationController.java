@@ -1,8 +1,13 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-import java.time.LocalDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.ofilipesouza.tasksphere.dto.LoginDTO;
+import dev.ofilipesouza.tasksphere.dto.RegisterDTO;
+import dev.ofilipesouza.tasksphere.model.User;
+import dev.ofilipesouza.tasksphere.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,23 +18,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.ofilipesouza.tasksphere.dto.RegisterDTO;
-import dev.ofilipesouza.tasksphere.model.User;
-import dev.ofilipesouza.tasksphere.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {
+    private final UserRepository repository;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserRepository repository;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    public AuthenticationController(UserRepository repository, AuthenticationManager authenticationManager) {
+        this.repository = repository;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO data ){
@@ -45,13 +45,13 @@ public class AuthenticationController {
 
         repository.save(user);
 
-        return ResponseEntity.ok("User registred! 👨🏾‍💻 ");
+        return ResponseEntity.ok("User registered! 👨🏾‍💻 ");
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid LoginDTO data, HttpSession httpSession){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        this.authenticationManager.authenticate(usernamePassword);
 
         httpSession.setAttribute("username",data.email());
         return ResponseEntity.ok("Logged in! ⚡️");
@@ -60,7 +60,7 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response){
         new SecurityContextLogoutHandler().logout(request, response, null);
-        return ResponseEntity.ok(new String("Logged out! 😴"));
+        return ResponseEntity.ok("Logged out! 😴");
     }
-    
+
 }

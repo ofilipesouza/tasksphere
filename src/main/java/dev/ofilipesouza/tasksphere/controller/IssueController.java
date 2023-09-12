@@ -1,6 +1,5 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,11 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IssueController {
 
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private IssueService issueService;
+
+    public IssueController(UserService userService, IssueService issueService) {
+        this.userService = userService;
+        this.issueService = issueService;
+    }
 
     public ResponseEntity<?> commentOnIssue(){
         return null;

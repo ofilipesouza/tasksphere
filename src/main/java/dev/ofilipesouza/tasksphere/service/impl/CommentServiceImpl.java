@@ -1,23 +1,27 @@
-package dev.ofilipesouza.tasksphere.service;
+package dev.ofilipesouza.tasksphere.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import dev.ofilipesouza.tasksphere.controller.Commentable;
 import dev.ofilipesouza.tasksphere.dto.CommentCreationDTO;
 import dev.ofilipesouza.tasksphere.model.Comment;
 import dev.ofilipesouza.tasksphere.model.User;
 import dev.ofilipesouza.tasksphere.repository.CommentRepository;
+import dev.ofilipesouza.tasksphere.service.CommentService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
-public class CommentServiceImpl implements CommentService{
+public class CommentServiceImpl implements CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+
+    public CommentServiceImpl(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
 
     private Comment buildComment(CommentCreationDTO data, User user) {
-        
+
         Comment comment = new Comment();
         comment.setComment(data.comment());
         comment.setCreatedBy(user);
@@ -56,7 +60,7 @@ public class CommentServiceImpl implements CommentService{
         obj.editComment(comment);
 
         return obj;
-        
+
     }
 
 }
