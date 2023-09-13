@@ -1,7 +1,5 @@
 package dev.ofilipesouza.tasksphere.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import dev.ofilipesouza.tasksphere.dto.IssueCreationDTO;
 import dev.ofilipesouza.tasksphere.enums.IssueStatus;
 import dev.ofilipesouza.tasksphere.model.Issue;
@@ -9,15 +7,20 @@ import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.model.User;
 import dev.ofilipesouza.tasksphere.repository.IssueRepository;
 import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class IssueServiceImpl implements IssueService{
 
-    @Autowired
-    private IssueRepository issueRepository;
-    
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final IssueRepository issueRepository;
+    private final ProjectRepository projectRepository;
+
+    public IssueServiceImpl(IssueRepository issueRepository, ProjectRepository projectRepository) {
+        this.issueRepository = issueRepository;
+        this.projectRepository = projectRepository;
+    }
 
     @Override
     public Issue creatIssue(IssueCreationDTO data, User user) {
@@ -38,7 +41,11 @@ public class IssueServiceImpl implements IssueService{
         project.getIssues().add(issueCreated);
         issueRepository.save(issueCreated);
         projectRepository.save(project);
-        
+
     }
-    
+
+    public List<Issue> getIssuesByReporterOrAssignee(User user){
+        return issueRepository.findByAssigneeOrReporter(user, user);
+    }
+
 }
