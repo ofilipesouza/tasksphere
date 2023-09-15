@@ -7,9 +7,12 @@ import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.model.User;
 import dev.ofilipesouza.tasksphere.repository.IssueRepository;
 import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
+import dev.ofilipesouza.tasksphere.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class IssueServiceImpl implements IssueService{
@@ -17,9 +20,12 @@ public class IssueServiceImpl implements IssueService{
     private final IssueRepository issueRepository;
     private final ProjectRepository projectRepository;
 
-    public IssueServiceImpl(IssueRepository issueRepository, ProjectRepository projectRepository) {
+    private final UserRepository userRepository;
+
+    public IssueServiceImpl(IssueRepository issueRepository, ProjectRepository projectRepository, UserRepository userRepository) {
         this.issueRepository = issueRepository;
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -46,6 +52,17 @@ public class IssueServiceImpl implements IssueService{
 
     public List<Issue> getIssuesByReporterOrAssignee(User user){
         return issueRepository.findByAssigneeOrReporter(user, user);
+    }
+
+    @Override
+    public void assignIssueToUser(Issue issue, User user) {
+        issue.setAssignee( user );
+        userRepository.save( user );
+    }
+
+    @Override
+    public Optional<Issue> findIssueById(UUID issueId) {
+        return issueRepository.findById(issueId);
     }
 
 }

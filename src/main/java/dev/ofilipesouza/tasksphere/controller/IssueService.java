@@ -6,6 +6,8 @@ import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.model.User;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface IssueService {
     Issue creatIssue(IssueCreationDTO data, User user);
@@ -13,4 +15,7 @@ public interface IssueService {
 
     List<Issue> getIssuesByReporterOrAssignee(User user);
 
+    void assignIssueToUser(Issue issue, User user);
+
+    Optional<Issue> findIssueById(UUID issueId);
 }
