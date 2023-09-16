@@ -46,9 +46,17 @@ public class IssueController {
 
         String emailFromSession = SessionUtils.getEmailFromSession(session);
         Optional<Issue> issueById = issueService.findIssueById(issueId);
-        issueById.ifPresent(issue -> issueService.assignIssueToUser(issue, userService.findByEmail(emailFromSession)));
+        issueById.ifPresent(issue -> issueService.assignIssueToUser(issue, userService.findByEmail(data.email())));
 
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{issueId}/assign")
+    public ResponseEntity<?> removeAssignment(@PathVariable @Valid UUID issueId, HttpSession session){
+
+        Optional<Issue> issueById = issueService.findIssueById(issueId);
+        issueById.ifPresent( issueService::removeAssignment );
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -4,7 +4,6 @@ import dev.ofilipesouza.tasksphere.dto.CommentCreationDTO;
 import dev.ofilipesouza.tasksphere.dto.IssueCreationDTO;
 import dev.ofilipesouza.tasksphere.dto.ProjectCreationDTO;
 import dev.ofilipesouza.tasksphere.dto.ProjectDTO;
-import dev.ofilipesouza.tasksphere.enums.CommentAction;
 import dev.ofilipesouza.tasksphere.exception.ErrorResponse;
 import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.model.User;
@@ -30,85 +29,90 @@ public class ProjectController {
 
     private final String PROJECT_NOT_FOUND = "Project not Found! 🙁";
 
-    public ProjectController(ProjectService projectService, UserService userService,
-            IssueService issueService) {
+    public ProjectController( ProjectService projectService, UserService userService,
+                              IssueService issueService ) {
         this.projectService = projectService;
         this.userService = userService;
         this.issueService = issueService;
     }
 
     @PostMapping
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody @Valid ProjectCreationDTO data,
-            HttpSession session) {
-        String email = SessionUtils.getEmailFromSession(session);
-        User user = userService.findByEmail(email);
-        Project createProject = projectService.createProject(data, user);
-        return ResponseEntity.ok(ProjectDTO.mapProjectToProjectDTO(createProject));
+    public ResponseEntity<ProjectDTO> createProject( @RequestBody @Valid ProjectCreationDTO data,
+                                                     HttpSession session ) {
+        String email = SessionUtils.getEmailFromSession( session );
+        User user = userService.findByEmail( email );
+        Project createProject = projectService.createProject( data, user );
+        return ResponseEntity.ok( ProjectDTO.mapProjectToProjectDTO( createProject ) );
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectDTO>> getProjectsByUser(HttpSession httpSession) {
+    public ResponseEntity<List<ProjectDTO>> getProjectsByUser( HttpSession httpSession ) {
         List<Project> projectsByUser =
-                projectService.getProjectsByUser(httpSession.getAttribute("username").toString());
-        return ResponseEntity.ok(ProjectDTO.mapProjectsToProjectsDTO(projectsByUser));
+                projectService.getProjectsByUser( httpSession.getAttribute( "username" ).toString() );
+        return ResponseEntity.ok( ProjectDTO.mapProjectsToProjectsDTO( projectsByUser ) );
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<?> getProjectById(@PathVariable @Valid UUID projectId)
-             {
+    public ResponseEntity<?> getProjectById( @PathVariable @Valid UUID projectId ) {
 
-        Optional<Project> projectById = projectService.getProjectById(projectId);
+        Optional<Project> projectById = projectService.getProjectById( projectId );
 
         if (projectById.isPresent()) {
-            return ResponseEntity.ok(ProjectDTO.mapProjectToProjectDTO(projectById.get()));
+            return ResponseEntity.ok( ProjectDTO.mapProjectToProjectDTO( projectById.get() ) );
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(PROJECT_NOT_FOUND));
+        return ResponseEntity.status( HttpStatus.NOT_FOUND )
+                .body( new ErrorResponse( PROJECT_NOT_FOUND ) );
     }
 
     @PostMapping("/{projectId}/issue")
-    public ResponseEntity<?> addIssueToProject(@PathVariable @Valid UUID projectId,
-            @RequestBody IssueCreationDTO data, HttpSession session) {
+    public ResponseEntity<?> addIssueToProject( @PathVariable @Valid UUID projectId,
+                                                @RequestBody IssueCreationDTO data, HttpSession session ) {
 
-        Optional<Project> projectById = projectService.getProjectById(projectId);
+        Optional<Project> projectById = projectService.getProjectById( projectId );
 
         if (projectById.isPresent()) {
-            String email = SessionUtils.getEmailFromSession(session);
-            User user = userService.findByEmail(email);
-            issueService.createIssueAndAddItToProject(data, user, projectById.get());
-            return ResponseEntity.ok("Issue created! 📌");
+            String email = SessionUtils.getEmailFromSession( session );
+            User user = userService.findByEmail( email );
+            issueService.createIssueAndAddItToProject( data, user, projectById.get() );
+            return ResponseEntity.ok( "Issue created! 📌" );
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(PROJECT_NOT_FOUND));
+        return ResponseEntity.status( HttpStatus.NOT_FOUND )
+                .body( new ErrorResponse( PROJECT_NOT_FOUND ) );
     }
 
-    @PostMapping("/{projectId}/comment")
-    public ResponseEntity<?> commentOnProject(@PathVariable @Valid UUID projectId,
-            @RequestBody CommentCreationDTO data, HttpSession session) {
+    @PostMapping("/{projectId}/comment/{commentId}")
+    public ResponseEntity<?> commentOnProject( @PathVariable @Valid UUID projectId, @PathVariable @Valid UUID commentId,
+                                               @RequestBody CommentCreationDTO data, HttpSession session ) {
 
-        Optional<Project> projectById = projectService.getProjectById(projectId);
+        Optional<Project> projectById = projectService.getProjectById( projectId );
 
         if (projectById.isPresent()) {
-            String email = SessionUtils.getEmailFromSession(session);
+            String email = SessionUtils.getEmailFromSession( session );
 
-            User user = userService.findByEmail(email);
+            User user = userService.findByEmail( email );
 
-            if (data.action() != CommentAction.ADD) {
-
-                if (data.action() == CommentAction.EDIT) {
-                    projectService.editComment(projectById.get(), data, user);
-                } else if (data.action() == CommentAction.DELETE) {
-                    projectService.deleteComment(projectById.get(), data, user);
-                }
+            if (commentId != null) {
+                projectService.editComment( projectById.get(), data, commentId, user );
             } else {
-                projectService.addCommentToProject(projectById.get(), data, user);
+                projectService.addCommentToProject( projectById.get(), data, user );
             }
 
-            return ResponseEntity.ok("Comment created! 📝");
+            return ResponseEntity.ok( "Comment created! 📝" );
         }
 
-        return ResponseEntity.ok(data);
+        return ResponseEntity.ok( data );
+    }
+
+    @DeleteMapping("/{projectId}/comment/{commentId}")
+    public ResponseEntity<?> deleteComment( @PathVariable @Valid UUID projectId, @PathVariable UUID commentId ) {
+
+        Optional<Project> projectById = projectService.getProjectById( projectId );
+
+        projectById.ifPresent( project -> projectService.deleteComment( project, commentId ) );
+
+
+        return ResponseEntity.noContent().build();
     }
 }

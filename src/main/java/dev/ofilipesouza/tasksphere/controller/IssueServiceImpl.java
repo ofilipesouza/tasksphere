@@ -65,4 +65,10 @@ public class IssueServiceImpl implements IssueService{
         return issueRepository.findById(issueId);
     }
 
+    @Override
+    public void removeAssignment( Issue issue ) {
+        issue.setAssignee( null );
+        issueRepository.save( issue );
+    }
+
 }

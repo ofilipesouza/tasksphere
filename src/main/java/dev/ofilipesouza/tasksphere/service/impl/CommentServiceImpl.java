@@ -45,21 +45,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Commentable deleteComment(Commentable obj, CommentCreationDTO data) {
-        Comment comment = getComment(data.commentId());
+    public void deleteComment( Commentable obj, UUID commentId) {
+        Comment comment = getComment(commentId);
         obj.deleteComment(comment);
         commentRepository.delete(comment);
-        return obj;
     }
 
     @Override
-    public Commentable editComment(Commentable obj, CommentCreationDTO data, User user) {
-        Comment comment = getComment(data.commentId());
+    public void editComment( Commentable obj, CommentCreationDTO data, UUID commentId, User user) {
+        Comment comment = getComment(commentId);
         comment.setComment(data.comment());
         commentRepository.save(comment);
         obj.editComment(comment);
-
-        return obj;
 
     }
 

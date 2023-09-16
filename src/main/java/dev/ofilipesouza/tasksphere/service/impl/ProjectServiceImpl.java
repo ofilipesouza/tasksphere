@@ -1,9 +1,5 @@
 package dev.ofilipesouza.tasksphere.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import org.springframework.stereotype.Service;
 import dev.ofilipesouza.tasksphere.controller.Commentable;
 import dev.ofilipesouza.tasksphere.dto.CommentCreationDTO;
 import dev.ofilipesouza.tasksphere.dto.ProjectCreationDTO;
@@ -13,6 +9,11 @@ import dev.ofilipesouza.tasksphere.repository.ProjectRepository;
 import dev.ofilipesouza.tasksphere.repository.UserRepository;
 import dev.ofilipesouza.tasksphere.service.CommentService;
 import dev.ofilipesouza.tasksphere.service.ProjectService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -53,14 +54,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void editComment(Project project, CommentCreationDTO data, User user) {
-        commentService.editComment(project,data,user);
+    public void editComment(Project project, CommentCreationDTO data, UUID commentId, User user) {
+        commentService.editComment(project,data,commentId, user);
         projectRepository.save(project);
     }
 
     @Override
-    public void deleteComment(Project project, CommentCreationDTO data, User user) {
-        commentService.deleteComment(project, data);
+    public void deleteComment(Project project, UUID commentId) {
+        commentService.deleteComment(project, commentId);
     }
-    
+
 }

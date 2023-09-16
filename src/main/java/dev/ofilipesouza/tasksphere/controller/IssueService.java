@@ -18,4 +18,5 @@ public interface IssueService {
     void assignIssueToUser(Issue issue, User user);
 
     Optional<Issue> findIssueById(UUID issueId);
+    void removeAssignment( Issue issue );
 }
