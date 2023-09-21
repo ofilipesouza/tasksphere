@@ -1,7 +1,7 @@
 package dev.ofilipesouza.tasksphere.service;
 
-import dev.ofilipesouza.tasksphere.controller.Commentable;
 import dev.ofilipesouza.tasksphere.dto.CommentCreationDTO;
+import dev.ofilipesouza.tasksphere.model.Commentable;
 import dev.ofilipesouza.tasksphere.model.User;
 
 import java.util.UUID;

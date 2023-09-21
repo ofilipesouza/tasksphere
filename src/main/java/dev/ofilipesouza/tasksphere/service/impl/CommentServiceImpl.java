@@ -1,8 +1,8 @@
 package dev.ofilipesouza.tasksphere.service.impl;
 
-import dev.ofilipesouza.tasksphere.controller.Commentable;
 import dev.ofilipesouza.tasksphere.dto.CommentCreationDTO;
 import dev.ofilipesouza.tasksphere.model.Comment;
+import dev.ofilipesouza.tasksphere.model.Commentable;
 import dev.ofilipesouza.tasksphere.model.User;
 import dev.ofilipesouza.tasksphere.repository.CommentRepository;
 import dev.ofilipesouza.tasksphere.service.CommentService;

@@ -93,17 +93,34 @@ public class ProjectController {
 
             User user = userService.findByEmail( email );
 
-            if (commentId != null) {
-                projectService.editComment( projectById.get(), data, commentId, user );
-            } else {
-                projectService.addCommentToProject( projectById.get(), data, user );
-            }
+            projectService.addCommentToProject( projectById.get(), data, user );
 
             return ResponseEntity.ok( "Comment created! 📝" );
         }
 
-        return ResponseEntity.ok( data );
+        return ResponseEntity.badRequest().build();
     }
+
+    @PutMapping("/{projectId}/comment/{commentId}")
+    public ResponseEntity<?> editCommentOnProject( @PathVariable @Valid UUID projectId, @PathVariable @Valid UUID commentId,
+                                                   @RequestBody CommentCreationDTO data, HttpSession session ) {
+        Optional<Project> projectById = projectService.getProjectById( projectId );
+
+        if (projectById.isPresent()) {
+
+            String email = SessionUtils.getEmailFromSession( session );
+
+            User user = userService.findByEmail( email );
+
+            projectService.editComment( projectById.get(), data, commentId, user );
+
+            return ResponseEntity.ok( "Comment edited! 📝" );
+
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
 
     @DeleteMapping("/{projectId}/comment/{commentId}")
     public ResponseEntity<?> deleteComment( @PathVariable @Valid UUID projectId, @PathVariable UUID commentId ) {
@@ -111,7 +128,6 @@ public class ProjectController {
         Optional<Project> projectById = projectService.getProjectById( projectId );
 
         projectById.ifPresent( project -> projectService.deleteComment( project, commentId ) );
-
 
         return ResponseEntity.noContent().build();
     }
