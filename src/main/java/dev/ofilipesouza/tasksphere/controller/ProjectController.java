@@ -21,7 +21,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("project")
+@RequestMapping("api/v1/project")
 public class ProjectController {
     private final ProjectService projectService;
     private final UserService userService;

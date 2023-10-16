@@ -28,4 +28,5 @@ public class Issue extends Commentable {
     @ManyToOne
     @JoinColumn(name = "reporter_id")
     private User reporter;
+
 }
