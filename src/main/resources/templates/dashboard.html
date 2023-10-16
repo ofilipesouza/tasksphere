@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head id="head">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.0/css/bootstrap.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/5.1.0/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/htmx.org/dist/ext/json-enc.js}"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+    <meta charset="UTF-8">
+    <title>TaskSphere</title>
+    <style>
+        .project-card {
+            cursor: pointer;
+            transition: transform 1.7s ease;
+        }
+
+        .project-card:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+<nav id="navigation" class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TaskSphere</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Projects
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li th:each="project : ${projects}">
+                            <a th:text="${project.name}" class="dropdown-item"
+                               href="#"></a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="text-white nav-link">Bostinha</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container container-fluid">
+    <div class="bg-white border-3 position-relative float-start mt-4 justify-content-center" id="issues">
+    </div>
+</div>
+</body>
+</html>
