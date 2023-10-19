@@ -1,0 +1,5 @@
+<li>
+    <p th:text="${project.name}" class="dropdown-item"
+       th:attr="hx-get=@{'http://localhost:8080/project/' + ${project.id} }, hx-push-url=@{'http://localhost:8080/project/' + ${project.id}}"
+       href="#"></p>
+</li>

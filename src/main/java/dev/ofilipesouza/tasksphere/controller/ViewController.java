@@ -1,9 +1,11 @@
 package dev.ofilipesouza.tasksphere.controller;
 
+import dev.ofilipesouza.tasksphere.dto.IssueDTO;
 import dev.ofilipesouza.tasksphere.dto.ProjectDTO;
-import dev.ofilipesouza.tasksphere.model.Issue;
 import dev.ofilipesouza.tasksphere.model.Project;
 import dev.ofilipesouza.tasksphere.service.ProjectService;
+import dev.ofilipesouza.tasksphere.utils.SessionUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,6 @@ import java.util.UUID;
 public class ViewController {
 
     ProjectService projectService;
-    UserService userService;
-
     private final String PROJECT = "project";
     private final String DASHBOARD = "dashboard";
     private final String LOGIN = "login";
@@ -42,18 +42,22 @@ public class ViewController {
         return new ModelAndView( DASHBOARD, model );
     }
 
-    @GetMapping(value = "project/{projectId}", headers = "HX-Redirect")
-    public ModelAndView project( @PathVariable UUID projectId ) {
+    @GetMapping(value = "/project/{projectId}")
+    public ModelAndView project( @PathVariable UUID projectId, HttpServletResponse response, HttpSession session ) {
         Optional<Project> projectById = projectService.getProjectById( projectId );
-        HashMap<String, List<Issue>> model = new HashMap<>();
+        var projects = projectService.getProjectsByUser( SessionUtils.getEmailFromSession( session ) );
+        HashMap<String, List<?>> model = new HashMap<>();
         if (projectById.isPresent()) {
             Project project = projectById.get();
-            model.put( "issues", project.getIssues() );
+            model.put( "issues", IssueDTO.mapIssuesToIssueDTO( project.getIssues() ) );
         }
-        return new ModelAndView( PROJECT, model );
+        model.put( "projects", ProjectDTO.mapProjectsToProjectsDTO( projects ) );
+        response.addHeader( "HX-Redirect", "/project/" + projectId );
+        return new ModelAndView( "project", model );
+
     }
 
-    @GetMapping("public/login")
+    @GetMapping(value = "public/login")
     public String login() {
         return LOGIN;
     }

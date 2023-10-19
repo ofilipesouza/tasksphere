@@ -1,3 +1,6 @@
 package dev.ofilipesouza.tasksphere.dto;
 
-public record IssueCreationDTO(String title, String description) {}
+import java.util.UUID;
+
+public record IssueCreationDTO(UUID projectId, String title, String description) {
+}

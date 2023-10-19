@@ -8,21 +8,11 @@
     <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
     <meta charset="UTF-8">
     <title>TaskSphere</title>
-    <style>
-        .project-card {
-            cursor: pointer;
-            transition: transform 1.7s ease;
-        }
-
-        .project-card:hover {
-            transform: scale(1.1);
-        }
-    </style>
 </head>
 <body>
 <nav id="navigation" class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">TaskSphere</a>
+        <a class="navbar-brand" href="/dashboard">TaskSphere</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,20 +24,83 @@
                        aria-expanded="false">
                         Projects
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul id="project-list-nav" class="dropdown-menu">
                         <li th:each="project : ${projects}">
-                            <a th:text="${project.name}" class="dropdown-item"
-                               href="#"></a></li>
+                            <p th:text="${project.name}" class="dropdown-item"
+                               th:attr="hx-get=@{'/project/' + ${project.id} }, hx-push-url=@{'/project/' + ${project.id}}"
+                               th:fragment="project-nav-item(project)"
+                               hx-target="#issues"
+                               hx-swap="innerHTML"
+                               href="#"></p>
+                        </li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="text-white nav-link">Bostinha</a></li>
+                <li class="nav-item">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCreateIssue">Create
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 <div class="container container-fluid">
-    <div class="bg-white border-3 position-relative float-start mt-4 justify-content-center" id="issues">
+    <div id="issues"></div>
+    <form hx-post="/api/v1/project"
+          hx-ext="json-enc"
+          hx-target="#project-list-nav"
+          hx-swap="beforeend">
+        <label for="name">
+            <input name="name" id="name"/>
+        </label>
+        <label for="description">
+            <input name="description" id="description"/>
+        </label>
+        <button type="button" class="btn btn-primary">
+            Create
+        </button>
+    </form>
+</div>
+<div class="modal fade" tabindex="-1" id="modalCreateIssue"
+     aria-labelledby="modalCreateIssueLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="create-issue-form" hx-post="api/v1/project/issue" hx-ext="json-enc">
+                <div class="modal-header"><h4>Create Issue</h4></div>
+                <div class="modal-body">
+                    <div class="col">
+                        <div class="row">
+                            <label for="issue-project">Project</label><select name="projectId" id="issue-project">
+                            <option selected>Select the project you're creating a issue</option>
+                            <option th:each="project : ${projects}"
+                                    th:text="${project.name}"
+                                    th:value="${project.id}"
+                            ></option>
+                        </select>
+                        </div>
+                        <div class="row">
+                            <label for="issue-title">
+                                Title
+                            </label>
+                            <input name="title" type="text" id="issue-title">
+                        </div>
+                        <div class="row">
+                            <label for="issue-description">
+                                Description
+                            </label>
+                            <input type="text" name="description" id="issue-description">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+<script>
+    document.body.addEventListener('htmx:afterRequest', function (evt) {
+    });
+</script>
 </body>
 </html>
