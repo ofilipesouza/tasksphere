@@ -1,0 +1,5 @@
+<div th:each="issue : ${issues}" class="bg-danger rounded-3 shadow-sm">
+    <p th:text="${issue.getTitle()}"></p>
+    <p th:text="${issue.getAssignee()}"></p>
+    <p th:text="${issue.getStatus().getDisplayName()}"></p>
+</div>
