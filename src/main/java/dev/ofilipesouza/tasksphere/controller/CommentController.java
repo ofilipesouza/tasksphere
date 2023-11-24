@@ -22,6 +22,12 @@ public class CommentController {
         this.projectRepository = projectRepository;
     }
 
+	@PostMapping
+	public Issue fuck(){
+return new Issue();
+	}
+
+
     @PostMapping("/issues/{issueId}/comments")
     public Issue addCommentToIssue(@PathVariable UUID issueId, @RequestBody Comment comment) throws NotFoundException {
         // Issue issue = issueRepository.findById(issueId).orElseThrow(NotFoundException::new);

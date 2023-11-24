@@ -51,6 +51,7 @@ public class ViewController {
             Project project = projectById.get();
             model.put( "issues", IssueDTO.mapIssuesToIssueDTO( project.getIssues() ) );
         }
+		System.out.println("Testando");
         model.put( "projects", ProjectDTO.mapProjectsToProjectsDTO( projects ) );
         response.addHeader( "HX-Redirect", "/project/" + projectId );
         return new ModelAndView( "project", model );
